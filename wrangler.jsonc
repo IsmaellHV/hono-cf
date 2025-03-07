@@ -2,7 +2,13 @@
   "$schema": "node_modules/wrangler/config-schema.json",
   "name": "hono-cf-01",
   "main": "src/index.ts",
-  "compatibility_date": "2025-03-06"
+  "compatibility_date": "2025-03-06",
+  "observability": {
+    "logs": {
+      "enabled": true
+    }
+  }
+
   // "compatibility_flags": [
   //   "nodejs_compat"
   // ],
