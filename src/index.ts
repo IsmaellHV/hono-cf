@@ -7,7 +7,15 @@ const app = new Hono<{ Bindings: Bindings }>();
 app.get('/', (c) => {
   const ENVIRONMENT = getEnvironment(c);
   console.log('ENVIRONMENT', ENVIRONMENT);
-  return c.text(`Hello ${ENVIRONMENT.NAME}`);
+
+  const response = c.text(`Hello ${ENVIRONMENT.NAME}`);
+
+  for (let i = 0; i < 10000; i++) {
+    console.log('i', i);
+    c.executionCtx.waitUntil(new Promise((resolve) => setTimeout(resolve, 1000)));
+  }
+
+  return response;
 });
 
 export default app;
