@@ -1,4 +1,5 @@
 export type Bindings = {
-  NAME: string;
-  API_TOKEN: string;
+  PREFIX: string;
+  RESEND_API_TOKEN: string;
+  RESEND_FROM: string;
 };
