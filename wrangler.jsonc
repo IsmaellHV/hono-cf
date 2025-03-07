@@ -7,8 +7,5 @@
     "logs": {
       "enabled": true
     }
-  },
-  "vars": {
-    "NAME": "Ismael"
   }
 }
