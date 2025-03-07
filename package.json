@@ -1,0 +1,14 @@
+{
+  "name": "hono-cf-01",
+  "scripts": {
+    "dev": "wrangler dev",
+    "deploy": "wrangler deploy --minify"
+  },
+  "dependencies": {
+    "hono": "^4.7.4"
+  },
+  "devDependencies": {
+    "@cloudflare/workers-types": "^4.20250303.0",
+    "wrangler": "^3.114.0"
+  }
+}
