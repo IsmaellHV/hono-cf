@@ -1,29 +1,23 @@
-import { Hono } from 'hono';
-import { getEnvironment } from './env';
-import type { Bindings } from './env/env.d.ts';
-import { Resend } from 'resend';
+import { Bindings } from './env';
+import { RouterRest } from './rest/Router';
+import { ServerREST } from './rest/Server';
 
-const app = new Hono<{ Bindings: Bindings }>();
+let appPromise: Promise<any> | null = null;
 
-app.get('/', (c) => {
-  const ENVIRONMENT = getEnvironment(c);
-  console.log('ENVIRONMENT', ENVIRONMENT);
-  return c.text(`Hello ${ENVIRONMENT.PREFIX}!`);
-});
+const initApp = async (env: { [key: string]: Bindings }) => {
+  const rutas: RouterRest = new RouterRest();
+  await rutas.exec();
 
-app.get('/send', async (c) => {
-  const ENVIRONMENT = getEnvironment(c);
-  const resend = new Resend(ENVIRONMENT.RESEND.API_KEY);
+  const server: ServerREST = new ServerREST();
+  await server.exec();
+  server.app.route(`/api/${env.PREFIX}`, rutas.router);
+  return server.app;
+};
 
-  const resp = await resend.emails.send({
-    from: ENVIRONMENT.RESEND.FROM,
-    to: ['ismaelhv@outlook.com'],
-    subject: 'Prueba',
-    html: '<p>it works!</p>',
-  });
-  console.log('RESPONSE', resp);
-
-  return c.text('Enviado...');
-});
-
-export default app;
+export default {
+  async fetch(request: Request, env: { [key: string]: Bindings }, ctx: ExecutionContext) {
+    if (!appPromise) appPromise = initApp(env);
+    const app = await appPromise;
+    return app.fetch(request, env, ctx);
+  },
+};

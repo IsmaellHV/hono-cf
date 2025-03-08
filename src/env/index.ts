@@ -1,5 +1,10 @@
-import type { Bindings } from './env.d.ts';
 import type { Context } from 'hono';
+
+export type Bindings = {
+  PREFIX: string;
+  RESEND_API_TOKEN: string;
+  RESEND_FROM: string;
+};
 
 export const getEnvironment = (c: Context<{ Bindings: Bindings }>) => ({
   PREFIX: c.env.PREFIX || '',

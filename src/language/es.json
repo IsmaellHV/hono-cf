@@ -1,0 +1,6 @@
+{
+    "validationErrors": {
+        "duplicateRecord": "Ya existe un usuario con el mismo número de documento de identidad",
+        "emailAlreadyRegistered": "El correo electrónico ya está registrado"
+    }
+}
