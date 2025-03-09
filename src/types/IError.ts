@@ -3,15 +3,23 @@ export class IError extends Error {
   public errorCode: number;
   public statusHttp: number;
 
-  constructor(message: string, errorCode: number, statusHttp: number = 0, messageClient?: string) {
+  constructor(message: string, errorCode: number, statusHttp: number = 500, messageClient?: string) {
     super(message);
-    if (Error.captureStackTrace) {
-      Error.captureStackTrace(this, IError);
-    }
+    Object.setPrototypeOf(this, IError.prototype);
 
     this.name = this.constructor.name;
-    this.messageClient = !messageClient ? message : messageClient;
+    this.messageClient = messageClient || message;
     this.errorCode = errorCode;
     this.statusHttp = statusHttp;
+  }
+
+  toJSON() {
+    return {
+      name: this.name,
+      message: this.message,
+      messageClient: this.messageClient,
+      errorCode: this.errorCode,
+      statusHttp: this.statusHttp,
+    };
   }
 }

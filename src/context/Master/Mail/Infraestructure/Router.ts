@@ -4,6 +4,7 @@ import { IRequest } from '../../../../rest/IRequest';
 import { EntityMain } from '../Domain/EntityMain';
 import { IError } from '../../../../types/IError';
 import { Hono, Context } from 'hono';
+import { AdapterAuthorization } from '../../../shared/Infraestructure/AdapterAuthorization';
 
 export class Router {
   private controller: Controller;
@@ -15,8 +16,6 @@ export class Router {
   }
 
   public async exec(): Promise<void> {
-    console.log('holaaaaaaaaaaaa');
-    console.log(`/${AdapterConfigure.SCHEMA}/${AdapterConfigure.ENTITY}/test`);
     this.router.get(`/${AdapterConfigure.SCHEMA}/${AdapterConfigure.ENTITY}/test`, this.test.bind(this));
     this.router.post(`/${AdapterConfigure.SCHEMA}/${AdapterConfigure.ENTITY}/sendMail`, this.sendMail.bind(this));
   }
@@ -37,6 +36,14 @@ export class Router {
   }
 
   private async test(c: Context): Promise<Response> {
+    if (c.get('authBasic')) {
+      if (!(await AdapterAuthorization.validateAuthBasic(c))) return;
+    } else if (c.get('authJWT')) {
+      if (!(await AdapterAuthorization.validateAuthBasic(c))) return;
+    } else {
+      return await AdapterAuthorization.noValidate(c);
+    }
+
     return c.json({ message: 'test' }, 200);
   }
 }
