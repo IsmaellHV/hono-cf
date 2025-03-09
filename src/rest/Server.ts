@@ -44,51 +44,49 @@ export class ServerREST {
     //   // this.app.use('*', compression());
 
     //   // // CORS con whitelist
-    this.app.use('*', async (c, next) => {
-      const ENVIRONMENT = getEnvironment(c);
-
-      const corsMiddleware = cors({
-        // origin: ENVIRONMENT.DOMAINS,
-        origin: (origin, c) => {
-          console.log('origin', origin);
-          console.log(ENVIRONMENT.DOMAINS.includes(origin));
-          console.log(ENVIRONMENT.DOMAINS.includes(origin) ? origin : null);
-          return ENVIRONMENT.DOMAINS.includes(origin) ? origin : null;
-        },
-        allowHeaders: ['Origin', 'Content-Type', 'Authorization'],
-        allowMethods: ['GET', 'OPTIONS', 'POST'],
-        exposeHeaders: ['Content-Length'],
-        credentials: true,
-      });
-      return corsMiddleware(c, next);
-    });
-
-    // this.app.use('*', async (c: Context, next: Next) => {
+    // this.app.use('*', async (c, next) => {
     //   const ENVIRONMENT = getEnvironment(c);
-    // const allowedOrigin = (origin: string) => {
-    //   return ENVIRONMENT.DOMAINS.includes(origin) ? origin : null;
-    // };
 
-    // // Obtiene el origen de la petición
-    // const requestOrigin = c.req.raw.headers.get('origin') || c.req.header('host') || '';
-    // console.log('requestOrigin', requestOrigin);
-    // const originResult = allowedOrigin(requestOrigin);
-    // console.log('originResult', originResult);
-
-    // if (!originResult) {
-    //   // Si el origen no está permitido, retorna un error
-    //   return c.json({ error: 'Origen no permitido' }, { status: 403 });
-    // }
-
-    // Si está permitido, aplica CORS y sigue el flujo
-    //     const corsOptions = {
-    //       origin: ENVIRONMENT.DOMAINS,
-    //       allowMethods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
-    //       allowHeaders: ['Content-Type', 'Authorization'],
-    //     };
-    //     return await cors(corsOptions)(c, next);
+    //   const corsMiddleware = cors({
+    //     // origin: ENVIRONMENT.DOMAINS,
+    //     origin: (origin, c) => {
+    //       console.log('origin', origin);
+    //       console.log(ENVIRONMENT.DOMAINS.includes(origin));
+    //       console.log(ENVIRONMENT.DOMAINS.includes(origin) ? origin : null);
+    //       return ENVIRONMENT.DOMAINS.includes(origin) ? origin : null;
+    //     },
+    //     allowHeaders: ['Origin', 'Content-Type', 'Authorization'],
+    //     allowMethods: ['GET', 'OPTIONS', 'POST'],
+    //     exposeHeaders: ['Content-Length'],
+    //     credentials: true,
     //   });
-    // }
+    //   return corsMiddleware(c, next);
+    // });
+
+    this.app.use('*', async (c: Context, next: Next) => {
+      console.log({ c });
+      const ENVIRONMENT = getEnvironment(c);
+      const allowedOrigin = (origin: string) => {
+        return ENVIRONMENT.DOMAINS.includes(origin) ? origin : null;
+      };
+
+      // Obtiene el origen de la petición
+      const requestOrigin = c.req.raw.headers.get('origin') || c.req.header('host') || '';
+      console.log('requestOrigin', requestOrigin);
+      const originResult = allowedOrigin(requestOrigin);
+      console.log('originResult', originResult);
+
+      if (!originResult) {
+        return c.json({ error: true, errorDescription: 'Origen no permitido', errorCode: 0, message: 'Origen no permitido' }, 403);
+      }
+
+      const corsOptions = {
+        origin: ENVIRONMENT.DOMAINS,
+        allowMethods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+        allowHeaders: ['Content-Type', 'Authorization'],
+      };
+      return await cors(corsOptions)(c, next);
+    });
   }
 
   private middlewareValidator() {
