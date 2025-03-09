@@ -84,9 +84,11 @@ export class ServerREST {
       }
 
       const corsOptions = {
-        origin: ENVIRONMENT.DOMAINS,
-        allowMethods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
-        allowHeaders: ['Origin', 'Content-Type', 'Authorization'],
+        origin: (origin: string, c: Context) => {
+          return ENVIRONMENT.DOMAINS.filter((x) => origin.includes(x)).length ? origin : '';
+        },
+        allowMethods: ['GET', 'POST', 'OPTIONS'],
+        allowHeaders: ['Content-Type', 'Authorization'],
         exposeHeaders: ['Content-Length'],
         credentials: true,
       };
