@@ -35,7 +35,7 @@ export class ServerREST {
   private async configurePlugins() {
     //   // // Logger
     // this.app.use('*', logger());
-    this.app.use(logger());
+    // this.app.use(logger());
 
     //   // // Helmet (seguridad)
     //   // this.app.use('*', helmet());
@@ -66,6 +66,7 @@ export class ServerREST {
     this.app.use('*', async (c: Context, next: Next) => {
       console.log({ c });
       const ENVIRONMENT = getEnvironment(c);
+      console.log({ ENVIRONMENT });
       const allowedOrigin = (origin: string) => {
         return ENVIRONMENT.DOMAINS.includes(origin) ? origin : null;
       };
