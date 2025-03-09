@@ -68,7 +68,7 @@ export class ServerREST {
       const ENVIRONMENT = getEnvironment(c);
       console.log({ ENVIRONMENT });
       const allowedOrigin = (origin: string) => {
-        return ENVIRONMENT.DOMAINS.includes(origin) ? origin : null;
+        return ENVIRONMENT.DOMAINS.filter((x) => origin.includes(x)).length ? true : false;
       };
 
       // Obtiene el origen de la petición
