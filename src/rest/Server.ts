@@ -73,6 +73,8 @@ export class ServerREST {
 
       // Obtiene el origen de la petición
       const requestOrigin = c.req.raw.headers.get('origin') || c.req.header('host') || '';
+      console.log('origin', c.req.raw.headers.get('origin'));
+      console.log('host', c.req.raw.headers.get('host'));
       console.log('requestOrigin', requestOrigin);
       const originResult = allowedOrigin(requestOrigin);
       console.log('originResult', originResult);
