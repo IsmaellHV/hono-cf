@@ -84,7 +84,9 @@ export class ServerREST {
       const corsOptions = {
         origin: ENVIRONMENT.DOMAINS,
         allowMethods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
-        allowHeaders: ['Content-Type', 'Authorization'],
+        allowHeaders: ['Origin', 'Content-Type', 'Authorization'],
+        exposeHeaders: ['Content-Length'],
+        credentials: true,
       };
       return await cors(corsOptions)(c, next);
     });
