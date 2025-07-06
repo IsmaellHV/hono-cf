@@ -1,0 +1,6 @@
+PREFIX=v1
+DOMAINS=["cloudflare.com","ismaelhv.com","localhost"]
+RESEND_API_TOKEN=your_resend_api_token_here
+RESEND_FROM=your_email@example.com
+DATABASE_LOG_NAME=log_name
+DATABASE_LOG_ID=log_id

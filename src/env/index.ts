@@ -5,6 +5,7 @@ export type Bindings = {
   DOMAINS: string;
   RESEND_API_TOKEN: string;
   RESEND_FROM: string;
+  DB_LOG: D1Database;
 };
 
 export const getEnvironment = (c: Context<{ Bindings: Bindings }>) => ({

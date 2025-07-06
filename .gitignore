@@ -1,7 +1,9 @@
-# prod
+# Production builds
 dist/
+build/
+out/
 
-# dev
+# Development
 .yarn/
 !.yarn/releases
 .vscode/*
@@ -11,16 +13,21 @@ dist/
 .idea/usage.statistics.xml
 .idea/shelf
 
-# deps
+# Dependencies
 node_modules/
-.wrangler
+jspm_packages/
 
-# env
+# Cloudflare Workers
+.wrangler/
+worker/
+
+# Environment variables
 .env
-.env.production
+.env.*
+!.env.example
 .dev.vars
 
-# logs
+# Logs
 logs/
 *.log
 npm-debug.log*
@@ -29,7 +36,55 @@ yarn-error.log*
 pnpm-debug.log*
 lerna-debug.log*
 
-# misc
-.DS_Store
+# Runtime data
+pids
+*.pid
+*.seed
+*.pid.lock
 
+# Coverage directory used by tools like istanbul
+coverage/
+*.lcov
+.nyc_output
+
+# TypeScript
+*.tsbuildinfo
+typings/
+
+# Optional npm cache directory
+.npm
+
+# Optional eslint cache
+.eslintcache
+
+# Cache directories
+.cache/
+.parcel-cache/
+.rpt2_cache/
+.rts2_cache_cjs/
+.rts2_cache_es/
+.rts2_cache_umd/
+
+# Temporary folders
+tmp/
+temp/
+
+# OS generated files
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# Lock files
 package-lock.json
+yarn.lock

@@ -8,4 +8,11 @@
       "enabled": true
     }
   }
+  // "d1_databases": [
+  //   {
+  //     "binding": "DB_LOG",
+  //     "database_name": "log",
+  //     "database_id": "8f1871fc-b782-4750-9cbb-830844dd62b0"
+  //   }
+  // ]
 }

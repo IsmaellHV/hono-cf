@@ -10,20 +10,12 @@ export class ServerREST {
   public app: Hono<{ Bindings: Bindings }>;
 
   constructor() {}
-  // this.whitelist = ENVIRONMENT.DOMAINS;
-
-  // Configurar middlewares globales (reemplaza createServer, configurePlugins, configureDataType)
-  // this.configureMiddlewares();
-
-  // Configurar middleware de validación (reemplaza middlewareValidator)
-
-  // Configurar manejo de errores y notFound
-  // this.configureErrorHandlers();
 
   public async exec() {
     this.app = await this.createServer();
     await this.configurePlugins();
     await this.middlewareValidator();
+    await this.middlewareError();
     return this.app;
   }
 
@@ -33,51 +25,15 @@ export class ServerREST {
   }
 
   private async configurePlugins() {
-    //   // // Logger
-    // this.app.use('*', logger());
-    // this.app.use(logger());
-
-    //   // // Helmet (seguridad)
-    //   // this.app.use('*', helmet());
-
-    //   // // Compression
-    //   // this.app.use('*', compression());
-
-    //   // // CORS con whitelist
-    // this.app.use('*', async (c, next) => {
-    //   const ENVIRONMENT = getEnvironment(c);
-
-    //   const corsMiddleware = cors({
-    //     // origin: ENVIRONMENT.DOMAINS,
-    //     origin: (origin, c) => {
-    //       console.log('origin', origin);
-    //       console.log(ENVIRONMENT.DOMAINS.includes(origin));
-    //       console.log(ENVIRONMENT.DOMAINS.includes(origin) ? origin : null);
-    //       return ENVIRONMENT.DOMAINS.includes(origin) ? origin : null;
-    //     },
-    //     allowHeaders: ['Origin', 'Content-Type', 'Authorization'],
-    //     allowMethods: ['GET', 'OPTIONS', 'POST'],
-    //     exposeHeaders: ['Content-Length'],
-    //     credentials: true,
-    //   });
-    //   return corsMiddleware(c, next);
-    // });
-
     this.app.use('*', async (c: Context, next: Next) => {
-      console.log({ c });
       const ENVIRONMENT = getEnvironment(c);
-      console.log({ ENVIRONMENT });
       const allowedOrigin = (origin: string) => {
         return ENVIRONMENT.DOMAINS.filter((x) => origin.includes(x)).length ? true : false;
       };
 
       // Obtiene el origen de la petición
       const requestOrigin = c.req.raw.headers.get('origin') || c.req.header('host') || '';
-      console.log('origin', c.req.raw.headers.get('origin'));
-      console.log('host', c.req.raw.headers.get('host'));
-      console.log('requestOrigin', requestOrigin);
       const originResult = allowedOrigin(requestOrigin);
-      console.log('originResult', originResult);
 
       if (!originResult) {
         return c.json({ error: true, errorDescription: 'Origen no permitido', errorCode: 0, message: 'Origen no permitido' }, 403);
@@ -124,42 +80,41 @@ export class ServerREST {
     });
   }
 
-  // private configureErrorHandlers() {
-  //   // onError: Manejo global de errores (reemplaza middlewareError)
-  //   this.app.onError(async (err, c) => {
-  //     const error = err as IError;
+  private middlewareError() {
+    this.app.onError(async (err, c) => {
+      const error = err as IError;
 
-  //     error.message = error.message || 'Se produjo un error. Por favor, inténtelo de nuevo más tarde';
-  //     error.statusHttp = error.statusHttp || 500;
-  //     error.errorCode = error.errorCode || 0;
-  //     error.messageClient = error.messageClient || 'Se produjo un error. Por favor, inténtelo de nuevo más tarde';
+      error.message = error.message || 'Se produjo un error. Por favor, inténtelo de nuevo más tarde';
+      error.statusHttp = error.statusHttp || 500;
+      error.errorCode = error.errorCode || 0;
+      error.messageClient = error.messageClient || 'Se produjo un error. Por favor, inténtelo de nuevo más tarde';
 
-  //     return c.json(
-  //       {
-  //         error: true,
-  //         errorDescription: error.messageClient,
-  //         errorCode: error.errorCode,
-  //         message: error.message,
-  //       },
-  //       error.statusHttp,
-  //     );
-  //   });
+      return c.json(
+        {
+          error: true,
+          errorDescription: error.messageClient,
+          errorCode: error.errorCode,
+          message: error.message,
+        },
+        error.statusHttp as ContentfulStatusCode,
+      );
+    });
 
-  //   // notFound: Manejo de rutas inexistentes (reemplaza middlewareNotFound)
-  //   this.app.notFound(async (c) => {
-  //     const error = new IError('EndPoint not found', 0, 404, 'Servicio no encontrado');
+    // notFound: Manejo de rutas inexistentes (reemplaza middlewareNotFound)
+    this.app.notFound(async (c) => {
+      const error = new IError('EndPoint not found', 0, 404, 'Servicio no encontrado');
 
-  //     return c.json(
-  //       {
-  //         error: true,
-  //         errorDescription: error.messageClient,
-  //         errorCode: error.errorCode,
-  //         message: error.message,
-  //       },
-  //       404,
-  //     );
-  //   });
-  // }
+      return c.json(
+        {
+          error: true,
+          errorDescription: error.messageClient,
+          errorCode: error.errorCode,
+          message: error.message,
+        },
+        error.statusHttp as ContentfulStatusCode,
+      );
+    });
+  }
 
   public async middlewareNotFound() {
     this.app.notFound((c: Context) => {

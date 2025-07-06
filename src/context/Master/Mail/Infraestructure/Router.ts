@@ -1,6 +1,5 @@
 import { AdapterConfigure } from './AdapterConfigure';
 import { Controller } from './Controller';
-import { IRequest } from '../../../../rest/IRequest';
 import { EntityMain } from '../Domain/EntityMain';
 import { IError } from '../../../../types/IError';
 import { Hono, Context } from 'hono';
@@ -16,6 +15,7 @@ export class Router {
   }
 
   public async exec(): Promise<void> {
+    // this.router.get(`/${AdapterConfigure.SCHEMA}/${AdapterConfigure.ENTITY}/test/:id`, this.test.bind(this));
     this.router.get(`/${AdapterConfigure.SCHEMA}/${AdapterConfigure.ENTITY}/test`, this.test.bind(this));
     this.router.post(`/${AdapterConfigure.SCHEMA}/${AdapterConfigure.ENTITY}/sendMail`, this.sendMail.bind(this));
   }
@@ -44,6 +44,18 @@ export class Router {
       return await AdapterAuthorization.noValidate(c);
     }
 
-    return c.json({ message: 'test' }, 200);
+    // const { results } = await c.env.DB_LOG.prepare(
+    //   "SELECT * FROM Customers WHERE CompanyName = ?",
+    // )
+    //   .bind("Bs Beverages")
+    //   .all();
+
+    // const id = c.req.param('id');
+    // const body = await c.req.parseBody(); //formaData
+    const body = await c.req.json(); //raw JSON
+
+    // console.log('ID', id);
+    // console.log('BODY', body);
+    return c.json(body, 200);
   }
 }

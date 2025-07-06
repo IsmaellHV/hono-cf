@@ -3,8 +3,8 @@
 // const SCHEMA: string = ENVIRONMENT.MAIL.SCHEMA;
 // const ENTITY: string = ENVIRONMENT.MAIL.ENTITY;
 
-const SCHEMA: string = 'MASTER';
-const ENTITY: string = 'MAIL';
+const SCHEMA: string = 'master';
+const ENTITY: string = 'mail';
 
 export const AdapterConfigure = {
   SCHEMA,
